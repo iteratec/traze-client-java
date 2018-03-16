@@ -6,12 +6,16 @@ package de.iteratec.traze.client.bot.strategy;
 import de.iteratec.traze.client.model.Bike;
 import de.iteratec.traze.client.model.Direction;
 import de.iteratec.traze.client.model.Grid;
+import de.iteratec.traze.client.mqtt.GameBrokerClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Robert Seedorff
  *
  */
 public class FillTheCompleteBoardStrategy implements TrazeBotStrategy {
+	private static final Logger log = LoggerFactory.getLogger(FillTheCompleteBoardStrategy.class);
 
 	private Direction[] nextMoveStrategy;
 
@@ -53,7 +57,7 @@ public class FillTheCompleteBoardStrategy implements TrazeBotStrategy {
 			resultStrategy += resultStrategy + String.format(" %s,", direction);
 		}
 
-		//System.out.println("Current Strategy: " + resultStrategy);
+		//log.info("Current Strategy: " + resultStrategy);
 	}
 
 	/**
@@ -78,7 +82,7 @@ public class FillTheCompleteBoardStrategy implements TrazeBotStrategy {
 			}
 		}
 
-		//System.out.println("Next move (by strategy): " + nextmove);
+		//log.info("Next move (by strategy): " + nextmove);
 
 		return nextmove;
 	}

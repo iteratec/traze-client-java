@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import de.iteratec.traze.client.bot.strategy.CircleStrategy;
 import de.iteratec.traze.client.bot.strategy.FillTheCompleteBoardStrategy;
 import de.iteratec.traze.client.bot.strategy.TrazeBotStrategy;
 import de.iteratec.traze.client.model.Bike;
@@ -17,8 +16,12 @@ import de.iteratec.traze.client.model.Topics;
 import de.iteratec.traze.client.mqtt.GameBrokerClient;
 import de.iteratec.traze.client.mqtt.Registration;
 import de.iteratec.traze.client.mqtt.RegistrationRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class TrazeApplicationExample  {
+	private static final Logger log = LoggerFactory.getLogger(TrazeApplicationExample.class);
 
 	private final String playerNickName;
 	private final String mqttClientName;
@@ -35,7 +38,7 @@ public class TrazeApplicationExample  {
 		String playerNickNameDefault = "myLocalPlayerNick"+ Math.random();
 		String mqttClientIdDefault = UUID.randomUUID().toString();
 
-		System.out.println(String.format("Starting game as '%s' with mqttClientId '%s'", playerNickNameDefault, mqttClientIdDefault));	
+		log.info(String.format("Starting game as '%s' with mqttClientId '%s'", playerNickNameDefault, mqttClientIdDefault));
 		
 		while(true) {
 			TrazeApplicationExample myRunningBot = new TrazeApplicationExample(playerNickNameDefault , mqttClientIdDefault, "tcp://traze.iteratec.de:1883");
@@ -63,7 +66,7 @@ public class TrazeApplicationExample  {
 	}
 	
 	public void closeClient() throws IOException {
-        System.out.println("closing bot...");
+        log.info("closing bot...");
         this.client.close();
     }
 	
@@ -73,12 +76,12 @@ public class TrazeApplicationExample  {
 
             Game game = games[0];
             
-            System.out.println(String.format("receive running game '%s' with active players '%s'", game.getName(), game.getActivePlayers()));
+            log.info(String.format("receive running game '%s' with active players '%s'", game.getName(), game.getActivePlayers()));
             
             this.client.subscribe(String.format(Topics.REGISTERED_TOPIC, game.getName(), this.mqttClientName), Registration.class, registration -> {
                 this.registration = registration;
                 
-                System.out.println(String.format("receive registration %s ", registration));
+                log.info(String.format("receive registration %s ", registration));
             });
             register(game);
 
@@ -87,7 +90,7 @@ public class TrazeApplicationExample  {
     }
 	
 	public void register(Game game) throws Exception {
-        System.out.println(String.format("register to game %s", game.getName()));
+        log.info(String.format("register to game %s", game.getName()));
         
 		client.publish(String.format(Topics.REGISTER_TOPIC, game.getName()), new RegistrationRequest(this.playerNickName, this.mqttClientName));
     }
@@ -100,14 +103,14 @@ public class TrazeApplicationExample  {
 	 */
 	public void playRound(String game, Grid grid) throws Exception {
         // log.info("receive grid update");
-        // System.out.println("receive grid update");
-        //System.out.println(String.format("Current registration: %s", this.registration) );
-		System.out.println("--- round ---");
+        // log.info("receive grid update");
+        //log.info(String.format("Current registration: %s", this.registration) );
+		log.info("--- round ---");
         
         if (this.registration != null) {
             if (this.initialMove) {
                 // make initial move
-                System.out.println("enter running game by initial move...");
+                log.info("enter running game by initial move...");
                 
                 publishNextMove(game, Direction.N);
                 this.initialMove = false;
@@ -116,15 +119,15 @@ public class TrazeApplicationExample  {
                 Optional<Bike> bike = grid.getBikes().stream().filter(p -> Optional.ofNullable(p).isPresent() && p.getPlayerId() == registration.getId()).findFirst();
                 if (bike.isPresent()) {
                     
-                    System.out.println(String.format("current position: [%s, %s]", bike.get().getCurrentLocation()[0], bike.get().getCurrentLocation()[1]));
+                    log.info(String.format("current position: [%s, %s]", bike.get().getCurrentLocation()[0], bike.get().getCurrentLocation()[1]));
                     
                     
                     Direction nextMoveDirection = this.myStrategy.getNextMoveDirection(grid, bike.get());
-                    System.out.println(String.format("Next move: %s", nextMoveDirection));
+                    log.info(String.format("Next move: %s", nextMoveDirection));
                     
                     publishNextMove(game, nextMoveDirection);
                 } else {
-                		System.out.println("player is killed");
+                		log.info("player is killed");
                     
                     this.killed = true;
                 }

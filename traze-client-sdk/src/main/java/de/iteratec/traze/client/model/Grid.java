@@ -1,10 +1,14 @@
 package de.iteratec.traze.client.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Grid {
+	private static final Logger log = LoggerFactory.getLogger(Grid.class);
 
 	private static final int FREE_CELL = 0;
 
@@ -41,7 +45,7 @@ public class Grid {
 		} else {
 			// LOG.error("putting bike {} on start position {} failed", bike.getPlayerId(),
 			// bike.getCurrentLocation());
-			System.out.println(String.format("putting bike {} on start position {} failed", bike.getPlayerId(),
+			log.info(String.format("putting bike {} on start position {} failed", bike.getPlayerId(),
 					bike.getCurrentLocation()));
 			throw new IllegalStateException("putting bike on start position failed");
 		}
@@ -91,7 +95,7 @@ public class Grid {
 	
 	public boolean isFreeWithSpace(Direction currentDirection, Direction nextDirection, int[] nextPosition) {
 		boolean result = isValid(nextPosition) && tiles[nextPosition[0]][nextPosition[1]] == FREE_CELL;
-		System.out.println(String.format("--- Check Next Step: [current position %s | next position %s] isFree: %s", currentDirection, nextDirection, result));
+		log.info(String.format("--- Check Next Step: [current position %s | next position %s] isFree: %s", currentDirection, nextDirection, result));
 		
 		return result;
 	}
@@ -119,11 +123,11 @@ public class Grid {
 		if (isFree(bike.getCurrentLocation())) {
 			tiles[bike.getCurrentLocation()[0]][bike.getCurrentLocation()[1]] = bike.getPlayerId();
 			// bike.getCurrentLocation());
-			System.out.println(String.format("place bike {} on {}", bike.getPlayerId(), bike.getCurrentLocation()));
+			log.info(String.format("place bike {} on {}", bike.getPlayerId(), bike.getCurrentLocation()));
 			return true;
 		} else {
 			// bike.getPlayerId());
-			System.out.println(
+			log.info(
 					String.format("position {} of bike {} is invalid", bike.getCurrentLocation(), bike.getPlayerId()));
 
 			return false;

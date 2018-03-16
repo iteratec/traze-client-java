@@ -3,12 +3,15 @@ package de.iteratec.traze.client.mqtt;
 import java.io.Closeable;
 import java.io.IOException;
 
+import de.iteratec.traze.client.model.Grid;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -16,6 +19,7 @@ import com.google.gson.Gson;
  *
  */
 public class GameBrokerClient implements Closeable {
+	private static final Logger log = LoggerFactory.getLogger(GameBrokerClient.class);
 
 	private final MqttClient mqttClient;
 	
@@ -25,7 +29,7 @@ public class GameBrokerClient implements Closeable {
 
 	public GameBrokerClient(final String brokerUri, final String mqttClientName) throws Exception {
 		
-		System.out.println("Starting GameBrokerClient");
+		log.info("Starting GameBrokerClient");
 		
 		this.mqttClient = new MqttClient(brokerUri, mqttClientName);
 
@@ -38,7 +42,7 @@ public class GameBrokerClient implements Closeable {
 
 		this.mqttClient.connect(options);
 				
-		System.out.println(String.format("connected: %s", this.mqttClient.isConnected()));
+		log.info(String.format("connected: %s", this.mqttClient.isConnected()));
         
 	}
 
