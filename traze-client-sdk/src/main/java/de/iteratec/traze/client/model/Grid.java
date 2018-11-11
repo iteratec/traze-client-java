@@ -43,10 +43,8 @@ public class Grid {
         if (placeBikeOnGrid(bike)) {
             return bike;
         } else {
-            // LOG.error("putting bike {} on start position {} failed", bike.getPlayerId(),
-            // bike.getCurrentLocation());
-            LOGGER.info(String.format("putting bike {} on start position {} failed", bike.getPlayerId(),
-                    bike.getCurrentLocation()));
+            LOGGER.info("putting bike {} on start position {} failed", bike.getPlayerId(),
+                    bike.getCurrentLocation());
             throw new IllegalStateException("putting bike on start position failed");
         }
     }
@@ -95,7 +93,7 @@ public class Grid {
 
     public boolean isFreeWithSpace(Direction currentDirection, Direction nextDirection, int[] nextPosition) {
         boolean result = isValid(nextPosition) && tiles[nextPosition[0]][nextPosition[1]] == FREE_CELL;
-        LOGGER.info(String.format("--- Check Next Step: [current position %s | next position %s] isFree: %s", currentDirection, nextDirection, result));
+        LOGGER.info("--- Check Next Step: [current position {} | next position {}] isFree: {}", currentDirection, nextDirection, result);
 
         return result;
     }

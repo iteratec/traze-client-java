@@ -34,7 +34,7 @@ public class FillTheCompleteBoardStrategy implements TrazeBotStrategy {
             }
         }
 
-        LOGGER.debug("Next move (by strategy): {}", nextmove);
+        LOGGER.info("Next move (by strategy): {}", nextmove);
 
         return nextmove;
     }
@@ -66,7 +66,7 @@ public class FillTheCompleteBoardStrategy implements TrazeBotStrategy {
     }
 
     private void printStrategy(Direction[] strategy) {
-        LOGGER.debug("Current Strategy: {}", () -> Arrays.stream(strategy).map(Direction::toString)
+        LOGGER.info("Current Strategy: {}", () -> Arrays.stream(strategy).map(Direction::toString)
                 .collect(Collectors.joining(" ")));
     }
 }

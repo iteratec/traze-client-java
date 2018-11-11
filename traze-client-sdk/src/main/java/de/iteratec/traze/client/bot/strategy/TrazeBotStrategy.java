@@ -13,6 +13,6 @@ public interface TrazeBotStrategy {
      * @param bike Must not be null.
      * @return Is not null.
      */
-    public Direction getNextMoveDirection(Grid grid, Bike bike);
+    Direction getNextMoveDirection(Grid grid, Bike bike);
 
 }

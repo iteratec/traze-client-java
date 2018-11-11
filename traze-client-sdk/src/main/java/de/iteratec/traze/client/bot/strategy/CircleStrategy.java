@@ -34,7 +34,7 @@ public class CircleStrategy implements TrazeBotStrategy {
             nextmove = nextMoveStrategy.get(i);
         }
 
-        LOGGER.debug("Next move (by strategy): {} , steps {}", nextmove, stepsPerLine);
+        LOGGER.info("Next move (by strategy): {} , steps {}", nextmove, stepsPerLine);
 
         return nextmove;
     }

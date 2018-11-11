@@ -18,7 +18,7 @@ import com.google.gson.Gson;
  *
  */
 public class GameBrokerClient implements Closeable {
-	private static final Logger log = LogManager.getLogger(GameBrokerClient.class);
+	private static final Logger LOGGER = LogManager.getLogger(GameBrokerClient.class);
 
 	private final MqttClient mqttClient;
 	
@@ -28,7 +28,7 @@ public class GameBrokerClient implements Closeable {
 
 	public GameBrokerClient(final String brokerUri, final String mqttClientName) throws Exception {
 		
-		log.info("Starting GameBrokerClient");
+		LOGGER.info("Starting GameBrokerClient");
 		
 		this.mqttClient = new MqttClient(brokerUri, mqttClientName);
 
@@ -41,7 +41,7 @@ public class GameBrokerClient implements Closeable {
 
 		this.mqttClient.connect(options);
 				
-		log.info(String.format("connected: %s", this.mqttClient.isConnected()));
+		LOGGER.info("connected: {}", this.mqttClient.isConnected());
         
 	}
 
