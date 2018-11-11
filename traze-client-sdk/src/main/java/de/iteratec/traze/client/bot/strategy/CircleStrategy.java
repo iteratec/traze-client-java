@@ -1,14 +1,11 @@
-/**
- *
- */
 package de.iteratec.traze.client.bot.strategy;
 
 import de.iteratec.traze.client.model.Bike;
 import de.iteratec.traze.client.model.Direction;
 import de.iteratec.traze.client.model.Grid;
 import de.iteratec.traze.client.mqtt.GameBrokerClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +14,7 @@ import java.util.List;
  * @author robert
  */
 public class CircleStrategy implements TrazeBotStrategy {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GameBrokerClient.class);
+    private static final Logger LOGGER = LogManager.getLogger(GameBrokerClient.class);
 
     private final List<Direction> nextMoveStrategy = Arrays.asList(Direction.N, Direction.E, Direction.S, Direction.W);
 

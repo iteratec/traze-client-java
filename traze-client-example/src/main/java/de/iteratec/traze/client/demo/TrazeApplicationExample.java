@@ -16,12 +16,12 @@ import de.iteratec.traze.client.model.Topics;
 import de.iteratec.traze.client.mqtt.GameBrokerClient;
 import de.iteratec.traze.client.mqtt.Registration;
 import de.iteratec.traze.client.mqtt.RegistrationRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 public class TrazeApplicationExample  {
-	private static final Logger log = LoggerFactory.getLogger(TrazeApplicationExample.class);
+	private static final Logger LOGGER = LogManager.getLogger(TrazeApplicationExample.class);
 
 	private final String playerNickName;
 	private final String mqttClientName;
@@ -38,7 +38,7 @@ public class TrazeApplicationExample  {
 		String playerNickNameDefault = "myLocalPlayerNick"+ Math.random();
 		String mqttClientIdDefault = UUID.randomUUID().toString();
 
-		log.info(String.format("Starting game as '%s' with mqttClientId '%s'", playerNickNameDefault, mqttClientIdDefault));
+		LOGGER.info(String.format("Starting game as '%s' with mqttClientId '%s'", playerNickNameDefault, mqttClientIdDefault));
 		
 		while(true) {
 			TrazeApplicationExample myRunningBot = new TrazeApplicationExample(playerNickNameDefault , mqttClientIdDefault, "tcp://traze.iteratec.de:1883");
@@ -52,8 +52,8 @@ public class TrazeApplicationExample  {
 	}
 	
 	/**
-	 * @param playerId
-	 * @param client
+	 * @param playerNickName
+	 * @param mqttClientName
 	 * @throws Exception 
 	 */
 	public TrazeApplicationExample(String playerNickName, String mqttClientName, String brokerUri) throws Exception {
@@ -66,7 +66,7 @@ public class TrazeApplicationExample  {
 	}
 	
 	public void closeClient() throws IOException {
-        log.info("closing bot...");
+        LOGGER.info("closing bot...");
         this.client.close();
     }
 	
@@ -76,12 +76,12 @@ public class TrazeApplicationExample  {
 
             Game game = games[0];
             
-            log.info(String.format("receive running game '%s' with active players '%s'", game.getName(), game.getActivePlayers()));
+            LOGGER.info(String.format("receive running game '%s' with active players '%s'", game.getName(), game.getActivePlayers()));
             
             this.client.subscribe(String.format(Topics.REGISTERED_TOPIC, game.getName(), this.mqttClientName), Registration.class, registration -> {
                 this.registration = registration;
                 
-                log.info(String.format("receive registration %s ", registration));
+                LOGGER.info(String.format("receive registration %s ", registration));
             });
             register(game);
 
@@ -90,7 +90,7 @@ public class TrazeApplicationExample  {
     }
 	
 	public void register(Game game) throws Exception {
-        log.info(String.format("register to game %s", game.getName()));
+        LOGGER.info(String.format("register to game %s", game.getName()));
         
 		client.publish(String.format(Topics.REGISTER_TOPIC, game.getName()), new RegistrationRequest(this.playerNickName, this.mqttClientName));
     }
@@ -102,15 +102,15 @@ public class TrazeApplicationExample  {
 	 * @throws Exception
 	 */
 	public void playRound(String game, Grid grid) throws Exception {
-        // log.info("receive grid update");
-        // log.info("receive grid update");
-        //log.info(String.format("Current registration: %s", this.registration) );
-		log.info("--- round ---");
+        // LOGGER.info("receive grid update");
+        // LOGGER.info("receive grid update");
+        //LOGGER.info(String.format("Current registration: %s", this.registration) );
+		LOGGER.info("--- round ---");
         
         if (this.registration != null) {
             if (this.initialMove) {
                 // make initial move
-                log.info("enter running game by initial move...");
+                LOGGER.info("enter running game by initial move...");
                 
                 publishNextMove(game, Direction.N);
                 this.initialMove = false;
@@ -119,15 +119,15 @@ public class TrazeApplicationExample  {
                 Optional<Bike> bike = grid.getBikes().stream().filter(p -> Optional.ofNullable(p).isPresent() && p.getPlayerId() == registration.getId()).findFirst();
                 if (bike.isPresent()) {
                     
-                    log.info(String.format("current position: [%s, %s]", bike.get().getCurrentLocation()[0], bike.get().getCurrentLocation()[1]));
+                    LOGGER.info(String.format("current position: [%s, %s]", bike.get().getCurrentLocation()[0], bike.get().getCurrentLocation()[1]));
                     
                     
                     Direction nextMoveDirection = this.myStrategy.getNextMoveDirection(grid, bike.get());
-                    log.info(String.format("Next move: %s", nextMoveDirection));
+                    LOGGER.info(String.format("Next move: %s", nextMoveDirection));
                     
                     publishNextMove(game, nextMoveDirection);
                 } else {
-                		log.info("player is killed");
+                		LOGGER.info("player is killed");
                     
                     this.killed = true;
                 }

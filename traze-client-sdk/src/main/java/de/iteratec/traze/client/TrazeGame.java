@@ -1,6 +1,3 @@
-/**
- * 
- */
 package de.iteratec.traze.client;
 
 import java.io.IOException;
@@ -17,15 +14,15 @@ import de.iteratec.traze.client.model.Topics;
 import de.iteratec.traze.client.mqtt.GameBrokerClient;
 import de.iteratec.traze.client.mqtt.Registration;
 import de.iteratec.traze.client.mqtt.RegistrationRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Robert Seedorff
  *
  */
 public class TrazeGame {
-	private static final Logger log = LoggerFactory.getLogger(TrazeGame.class);
+	private static final Logger log = LogManager.getLogger(TrazeGame.class);
 	
 	private final String playerNickName;
 	private final String mqttClientName;
