@@ -2,6 +2,7 @@ package de.iteratec.traze.client.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 
@@ -93,37 +94,16 @@ public class Bike {
 		currentLocation = nextStep(direction);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		if (!super.equals(o)) {
-			return false;
-		}
-
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
 		Bike bike = (Bike) o;
-
 		return playerId == bike.playerId;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		int result = super.hashCode();
-		result = 31 * result + playerId;
-		return result;
+		return Objects.hashCode(this.playerId);
 	}
 }

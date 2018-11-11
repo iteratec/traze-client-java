@@ -1,30 +1,44 @@
-/**
- * 
- */
 package de.iteratec.traze.client.bot.strategy;
 
 import de.iteratec.traze.client.model.Bike;
 import de.iteratec.traze.client.model.Direction;
 import de.iteratec.traze.client.model.Grid;
-import de.iteratec.traze.client.mqtt.GameBrokerClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 /**
  * @author Robert Seedorff
- *
  */
 public class FillTheCompleteBoardStrategy implements TrazeBotStrategy {
-	private static final Logger log = LoggerFactory.getLogger(FillTheCompleteBoardStrategy.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FillTheCompleteBoardStrategy.class);
 
 	private Direction[] nextMoveStrategy;
 
-	/**
-	 * 
-	 * @param grid
-	 * @param bike
-	 * @return
-	 */
+	@Override
+	public Direction getNextMoveDirection(Grid grid, Bike bike) {
+
+		// every move is invalid
+		Direction nextmove = Direction.W;
+
+		// ensure there is a current strategy filled with a list of moves
+		if (this.nextMoveStrategy == null) {
+			this.nextMoveStrategy = this.getMoveStrategyTrail(grid, bike);
+		}
+
+		for (Direction planedDirection : this.nextMoveStrategy) {
+			if (grid.isFree(bike.nextStep(planedDirection))) {
+				nextmove = planedDirection;
+			}
+		}
+
+		LOGGER.debug("Next move (by strategy): {}" , nextmove);
+
+		return nextmove;
+	}
+
 	private Direction[] getMoveStrategyTrail(Grid grid, Bike bike) {
 		Direction[] strategy = new Direction[4];
 		if (bike.getCurrentLocation()[0] < grid.getWidth() / 2) {
@@ -52,38 +66,7 @@ public class FillTheCompleteBoardStrategy implements TrazeBotStrategy {
 	}
 
 	private void printStrategy(Direction[] strategy) {
-		String resultStrategy = "";
-		for (Direction direction : strategy) {
-			resultStrategy += resultStrategy + String.format(" %s,", direction);
-		}
-
-		//log.info("Current Strategy: " + resultStrategy);
-	}
-
-	/**
-	 * 
-	 */
-	@Override
-	public Direction getNextMoveDirection(Grid grid, Bike bike) {
-
-		// every move is invalid
-		Direction nextmove = Direction.W;
-
-		// ensure there is a current strategy filled with a list of moves
-		if (this.nextMoveStrategy == null) {
-			this.nextMoveStrategy = this.getMoveStrategyTrail(grid, bike);
-		}
-		
-		// printStrategy(this.nextMoveStrategy);
-
-		for (Direction planedDirection : this.nextMoveStrategy) {
-			if (grid.isFree(bike.nextStep(planedDirection))) {
-				nextmove = planedDirection;
-			}
-		}
-
-		//log.info("Next move (by strategy): " + nextmove);
-
-		return nextmove;
+		LOGGER.debug("Current Strategy: {}", Arrays.stream(strategy).map(Direction::toString)
+                .collect(Collectors.joining(" ")));
 	}
 }
